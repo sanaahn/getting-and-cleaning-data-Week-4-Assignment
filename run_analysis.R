@@ -1,26 +1,24 @@
 # Libraries used
 library(dplyr)
 
-# Read features from "features.txt"
+# Read features 
 
-feature_list <- read.table("/UCI HAR Dataset/features.txt")
+feature <- read.table("/UCI HAR Dataset/features.txt")
 
-# Assign second column of "feature_list"
+feature_vect <- feature_list[,"V2"]
 
-feature_vector <- feature_list[,"V2"]
+# Read X_train 
 
-# Read  X_train & assign column labels 
+X_train <- read.table("/UCI HAR Dataset/train/X_train.txt", col.names=feature_vect,check.names = FALSE)
 
-X_train <- read.table("/UCI HAR Dataset/train/X_train.txt", col.names=feature_vector,check.names = FALSE)
-
-# Read y_train & assign column label 
+# Read y_train  
 y_train <- read.table("/UCI HAR Dataset/train/y_train.txt",col.names = "Activity")
 
-# Read in subject_train and assign column label 
+# Read in subject_train 
 subject_train <- read.table("/UCI HAR Dataset/train/subject_train.txt",col.names = "Subject")
 
 
-# Read in X_test and assign column labels from 'feature_vector'.
+# Read in X_test and assign column labels from 'feature_vect'.
 X_test <- read.table("/UCI HAR Dataset/test/X_test.txt", col.names=feature_vector,check.names = FALSE)
 
 # Read in y_test and assign column label "Activity"
@@ -47,36 +45,36 @@ df2 <- df[ , grep("std\\(\\)", names(df), perl = TRUE ) ]
 
 # Combine the two dataframe 
 .
-final_df <- cbind(df1,df2)
-final_df <- final_df[,order(names(final_df))]
+Main_df <- cbind(df1,df2)
+Main_df <- Main_df[,order(names(Main_df))]
 
 # Add activity and subject vectors
 
-final_df <- cbind(activity,subject,final_df)
+Main_df <- cbind(activity,subject,final_df)
 
 
 #the activities in the "Activities" column
 
-final_df$Activity[which(final_df$Activity == 1)] ="WALKING"
-final_df$Activity[which(final_df$Activity == 2)] ="WALKING_UPSTAIRS"
-final_df$Activity[which(final_df$Activity == 3)] ="WALKING_DOWNSTAIRS"
-final_df$Activity[which(final_df$Activity == 4)] ="SITTING"
-final_df$Activity[which(final_df$Activity == 5)] ="STANDING"
-final_df$Activity[which(final_df$Activity == 6)] ="LAYING"
+Main_df$Activity[which(Main_df$Activity == 1)] ="WALKING"
+Main_df$Activity[which(Main_df$Activity == 2)] ="WALKING_UPSTAIRS"
+Main_df$Activity[which(Main_df$Activity == 3)] ="WALKING_DOWNSTAIRS"
+Main_df$Activity[which(Main_df$Activity == 4)] ="SITTING"
+Main_df$Activity[which(Main_df$Activity == 5)] ="STANDING"
+Main_df$Activity[which(Main_df$Activity == 6)] ="LAYING"
 
-#final dt 
+#Main dt 
 
-final_df <- final_df[order(final_df$Subject, final_df$Activity),]
+Main_df <- Main_df[order(Main_df$Subject, Main_df$Activity),]
 
 # Calculate mean values for each of the columns
 means <- suppressWarnings(aggregate(final_df,by = list(final_df$Activity,final_df$Subject),function (x) mean(as.numeric(as.character(x)))))
 
-# Cleaning columns in the "means" dataframe.
+# Clean columns in the "means" dataframe.
 
 means <- subset(means, select=-c(Activity,Subject))
 names(means)[names(means)=="Group.1"] <- "Activity"
 names(means)[names(means)=="Group.2"] <- "Subject"
 
-# To create 'tidy' data, place "Subject" column at beginning of dataframe.
+#  create 'tidy' data
 means <- means %>% select(Subject, everything())
 write.table(means,file="tiddy_data.txt",row.name=FALSE)

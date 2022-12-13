@@ -5,7 +5,7 @@ The data used in the projected was gathered from  the Samsung Galaxy S smartphon
 
 These files are located in this repository:
 
-The README.md fie provides a summary regarding how this data set was created. Then there's a codebook explaing the contents of the data. 
+The README.md fie provides a summary regarding how this data set was created. Then there's a codebook explaining the contents of the data. 
 An R script which has the code used to clean the raw data in order to create a tidy data set which can be used for analysis in future. 
 Lastly the tidy data text file.
 
